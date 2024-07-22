@@ -14,10 +14,10 @@ logging.basicConfig(filename='errores.log', level=logging.ERROR,
 
 # Configuración de la base de datos y AWS Lambda
 DB_CONFIG = {
-    'dbname': 'db',
-    'user': 'user',
-    'password': 'password',
-    'host': 'host',
+    'dbname': '',
+    'user': '',
+    'password': '',
+    'host': '',
     'port': '5432'
 }
 
@@ -68,7 +68,7 @@ def invoke_lambda(results):
             "personal_loans_document_id": result[0],
             "phone_number": result[1]
         }
-        user_id = f'"{result[2]}"'
+        user_id = result[2]
         start_date = result[3].strftime('%d-%m-%Y')
         end_date = result[4].strftime('%d-%m-%Y')
         periodo = f'"{start_date}" al "{end_date}"'
@@ -107,7 +107,7 @@ def invoke_lambda(results):
                         }
                     ]
                 }
-                
+
                 response = SNS_CLIENT.publish(
                     TopicArn=NOTIFICATION_CENTER_SNS_ARN,
                     Message=json.dumps(notification_request, default=json_converter),
