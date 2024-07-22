@@ -23,6 +23,4 @@
 7. When  execution is finished desactivate venv with command
     `
     deactivate
-    `# batch-ls
-# ls-batch-script
-# ls-batch-script
+    `
