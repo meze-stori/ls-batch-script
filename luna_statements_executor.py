@@ -71,7 +71,7 @@ def invoke_lambda(results):
         start_date = result[3].strftime('%d-%m-%Y')
         end_date = result[4].strftime('%d-%m-%Y')
         periodo = f'"{start_date}" al "{end_date}"'
-        name = result[5] + " " + result[6]
+        name = result[5]
 
         print("Payload to send --> ", payload)
         
