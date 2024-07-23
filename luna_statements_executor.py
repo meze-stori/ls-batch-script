@@ -5,7 +5,7 @@ import logging
 import time
 from botocore.config import Config
 from boto3 import client as boto3_client
-
+from datetime import date, datetime
 
 
 # Configurar logging
@@ -169,7 +169,7 @@ def json_converter(o):
         try:
             return o.__str__()
         except Exception as e:
-            logger.error("Error converting datetime value to string: %s", e)
+            logging.error("Error converting datetime value to string: %s", e)
             return None
     elif isinstance(o, Decimal):
         return float(o)
