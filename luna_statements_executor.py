@@ -18,7 +18,7 @@ DB_CONFIG = {
     'user': '',
     'password': '',
     'host': '',
-    'port': '5432'
+    'port': ''
 }
 
 NOTIFICATION_CENTER_SNS_ARN = ""
@@ -28,19 +28,20 @@ LAMBDA_CONFIG = {
 }
 
 SQL_QUERY = """
-SELECT distinct pld.personal_loans_document_id, pp.phone_number, pm.user_id, plc.start_date, plc.end_date,
-pm.name , (pm.first_lastname ||' ' || pm.second_lastname) as last_name
-FROM statement.personal_loans_document pld
-JOIN product.core_contract cc on cc.contract_id = pld.contract_id
-JOIN statement.personal_loans_cycle plc ON plc.personal_loans_cycle_id = pld.personal_loans_cycle_id
-JOIN person.main pm on pm.person_id  = cc.person_id 
-JOIN person.phone pp on cc.person_id = pp.person_id
-WHERE plc.end_date = '2024-08-31';
+    SELECT distinct pld.personal_loans_document_id, pp.phone_number, pm.user_id, plc.start_date, plc.end_date,
+            pm.name || ' ' || pm.first_lastname ||' ' || coalesce(pm.second_lastname, '') as name
+        FROM statement.personal_loans_document pld
+        JOIN product.core_contract cc on cc.contract_id = pld.contract_id
+        JOIN statement.personal_loans_cycle plc ON plc.personal_loans_cycle_id = pld.personal_loans_cycle_id
+        JOIN person.main pm on pm.person_id  = cc.person_id
+        JOIN person.phone pp on cc.person_id = pp.person_id
+        WHERE plc.end_date = '2024-08-31'
 """
 
 BOTO3_CONFIG = Config(retries={"max_attempts": 5, "mode": "standard"})
 
 SNS_CLIENT = boto3_client("sns", config=BOTO3_CONFIG)
+LAMBDA_CLIENT = boto3.client('lambda')
 
 def query_database():
     try:
@@ -57,9 +58,7 @@ def query_database():
 
 def invoke_lambda(results):
      
-    lambda_client = boto3.client(
-        'lambda'
-    )
+    
     for result in results:
 
         time.sleep(7)
@@ -77,7 +76,7 @@ def invoke_lambda(results):
         print("Payload to send --> ", payload)
         
         try:
-            response = lambda_client.invoke(
+            response = LAMBDA_CLIENT.invoke(
                 FunctionName=LAMBDA_CONFIG['function_name'],
                 InvocationType='RequestResponse',
                 Payload=json.dumps(payload)
@@ -107,7 +106,7 @@ def invoke_lambda(results):
                         }
                     ]
                 }
-
+                
                 response = SNS_CLIENT.publish(
                     TopicArn=NOTIFICATION_CENTER_SNS_ARN,
                     Message=json.dumps(notification_request, default=json_converter),
