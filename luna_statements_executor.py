@@ -29,13 +29,13 @@ LAMBDA_CONFIG = {
 
 SQL_QUERY = """
     SELECT distinct pld.personal_loans_document_id, pp.phone_number, pm.user_id, plc.start_date, plc.end_date,
-            pm.name || ' ' || pm.first_lastname ||' ' || coalesce(pm.second_lastname, '') as name
-        FROM statement.personal_loans_document pld
-        JOIN product.core_contract cc on cc.contract_id = pld.contract_id
-        JOIN statement.personal_loans_cycle plc ON plc.personal_loans_cycle_id = pld.personal_loans_cycle_id
-        JOIN person.main pm on pm.person_id  = cc.person_id
-        JOIN person.phone pp on cc.person_id = pp.person_id
-        WHERE plc.end_date = '2024-08-31'
+        pm.name || ' ' || pm.first_lastname ||' ' || coalesce(pm.second_lastname, '') as name
+    FROM statement.personal_loans_document pld
+    JOIN product.core_contract cc on cc.contract_id = pld.contract_id
+    JOIN statement.personal_loans_cycle plc ON plc.personal_loans_cycle_id = pld.personal_loans_cycle_id
+    JOIN person.main pm on pm.person_id  = cc.person_id
+    JOIN person.phone pp on cc.person_id = pp.person_id
+    WHERE plc.end_date = '2024-07-20'
 """
 
 BOTO3_CONFIG = Config(retries={"max_attempts": 5, "mode": "standard"})
