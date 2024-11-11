@@ -3,10 +3,12 @@ import boto3
 import json
 import logging
 import time
+import locale
 from botocore.config import Config
 from boto3 import client as boto3_client
 from datetime import date, datetime
 
+locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')
 
 # Configurar logging
 logging.basicConfig(filename='errores.log', level=logging.ERROR,
@@ -68,9 +70,9 @@ def invoke_lambda(results):
             "phone_number": result[1]
         }
         user_id = result[2]
-        start_date = result[3].strftime('%d-%m-%Y')
-        end_date = result[4].strftime('%d-%m-%Y')
-        periodo = f'"{start_date}" al "{end_date}"'
+        start_date = result[3].strftime('%d de %B de %Y')
+        end_date = result[4].strftime('%d de %B de %Y')
+        periodo = f'{start_date} al {end_date}'
         name = result[5]
 
         print("Payload to send --> ", payload)
