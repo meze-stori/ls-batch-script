@@ -8,7 +8,7 @@ from botocore.config import Config
 from boto3 import client as boto3_client
 from datetime import date, datetime
 
-locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')
+locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
 
 # Configurar logging
 logging.basicConfig(filename='errores.log', level=logging.ERROR,
